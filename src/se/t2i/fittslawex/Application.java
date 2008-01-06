@@ -9,8 +9,8 @@ public class Application {
 	 */
 	public static void main(String[] args) {		
 		// Create controller
-		Controller controller = new Controller(new Model(), new MainWindow());
-		controller.run();
+		Controller c = new Controller(new Model(), new MainWindow());		
+		c.run();
 	}
 
 }

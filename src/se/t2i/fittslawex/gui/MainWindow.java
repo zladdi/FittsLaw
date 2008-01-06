@@ -1,12 +1,7 @@
 package se.t2i.fittslawex.gui;
 
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.events.PaintEvent;
-import org.eclipse.swt.events.PaintListener;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.SWT;
@@ -73,7 +68,6 @@ public class MainWindow {
 		sShell.setLayout(gridLayout);
 		sShell.setSize(new Point(800, 700));
 		button = new Button(sShell, SWT.NONE);
-		button.setText("Start");
 		button.setLayoutData(gridData1);
 	}
 
@@ -187,5 +181,9 @@ public class MainWindow {
 	public void setLabel1Text(String value) {
 		group1.setText(value);
 		sShell.changed(new Control[]{group1});
+	}
+	
+	public Button getButton() {
+		return button;
 	}
 }

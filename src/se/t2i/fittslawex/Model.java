@@ -1,8 +1,8 @@
 package se.t2i.fittslawex;
 
-class Model {
+public class Model {
 
-	static class MObject {
+	public static class MObject {
 		private int xPos = 0, yPos = 0, size = 0, color = 0;
 		private String name;
 		
@@ -56,11 +56,11 @@ class Model {
 		target = new MObject("T");
 	}
 	
-	MObject getMovable() {
+	public MObject getMovable() {
 		return movable;
 	}
 	
-	MObject getTarget() {
+	public MObject getTarget() {
 		return target;
 	}
 }

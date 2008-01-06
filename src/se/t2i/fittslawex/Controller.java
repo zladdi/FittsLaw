@@ -3,6 +3,8 @@ package se.t2i.fittslawex;
 import java.text.NumberFormat;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.MouseMoveListener;
@@ -13,8 +15,9 @@ import org.eclipse.swt.widgets.Canvas;
 
 import se.t2i.fittslawex.Model.MObject;
 import se.t2i.fittslawex.gui.MainWindow;
+import se.t2i.fittslawex.task.TaskController;
 
-class Controller implements MouseMoveListener, MouseListener, PaintListener {
+class Controller implements MouseMoveListener, MouseListener, PaintListener, ModifyListener {
 
 	private static final int SIZE_SCALE = 30;
 	private static final int DEFAULT_SIZE = 1;
@@ -25,21 +28,26 @@ class Controller implements MouseMoveListener, MouseListener, PaintListener {
 	private static final int TARGET_BACKGROUND_SEL = SWT.COLOR_DARK_BLUE;
 	
 	private static final String SIZE_OF_MOV_STR = "Size of ";
-	private static final String ELAPSED_TIME_STR = "Elapsed Time";
 	private static final String DISTANCE_STR = "Distance";
 	
 	private final NumberFormat formatter;
 	
-	Model.MObject movable, target, gripped;
+	MObject movable, target, gripped;
 	MainWindow view;
 	Canvas canvas;
-		
-	Controller(Model model, MainWindow view) {
+	
+	// Sub controllers
+	TaskController taskC;
+	
+	Controller(Model model, MainWindow view) {		
 		formatter = NumberFormat.getNumberInstance();
 		formatter.setMinimumFractionDigits(2);
 		formatter.setMaximumFractionDigits(2);
 		
 		this.view = view;
+		
+		// Init sub controllers
+		taskC = new TaskController(model, view);
 		
 		canvas = view.getMainCanvas();
 		canvas.addMouseListener(this);
@@ -65,16 +73,16 @@ class Controller implements MouseMoveListener, MouseListener, PaintListener {
 		
 		gripped = null;
 		
-		view.getLabel1().setAlignment(SWT.RIGHT);
 		view.setSpinnerText(SIZE_OF_MOV_STR + target.getName());
-		view.getSpinner().setDigits(2);
-		view.getSpinner().setMaximum(DEFAULT_SIZE*1000);
-		view.getSpinner().setMinimum(DEFAULT_SIZE*100);
-		view.getSpinner().setIncrement(DEFAULT_SIZE*25);
+		view.getSpinner().setDigits(1);
+		view.getSpinner().setMaximum(DEFAULT_SIZE*300);
+		view.getSpinner().setMinimum(DEFAULT_SIZE*10);
+		view.getSpinner().setIncrement(DEFAULT_SIZE*5);
+		view.getSpinner().addModifyListener(this);
 		
 		view.setLabelText(DISTANCE_STR);
 		view.getLabel().setAlignment(SWT.RIGHT);
-		view.setLabel1Text(ELAPSED_TIME_STR);
+
 		// Paint
 		canvas.redraw();
 	}
@@ -88,10 +96,10 @@ class Controller implements MouseMoveListener, MouseListener, PaintListener {
 		if (gripped != null) {
 			gripped.setXPos(e.x);
 			gripped.setYPos(e.y);
-		} else if (isInRange(movable, e.x, e.y)) {
+		} else if (DefaultObjMeasures.isInRange(movable, e.x, e.y)) {
 			movable.setColor(MOVABLE_BACKGROUND_SEL);
 			target.setColor(TARGET_BACKGROUND);
-		} else if (isInRange(target, e.x, e.y)) {
+		} else if (DefaultObjMeasures.isInRange(target, e.x, e.y)) {
 			movable.setColor(MOVABLE_BACKGROUND);
 			target.setColor(TARGET_BACKGROUND_SEL);			
 		} else {
@@ -106,9 +114,9 @@ class Controller implements MouseMoveListener, MouseListener, PaintListener {
 	}
 
 	public void mouseDown(MouseEvent e) {
-		if (isInRange(movable, e.x, e.y)) {
+		if (DefaultObjMeasures.isInRange(movable, e.x, e.y)) {
 			gripped = movable;
-		} else if (isInRange(target, e.x, e.y)) {
+		} else if (DefaultObjMeasures.isInRange(target, e.x, e.y)) {
 			gripped = target;
 		} else {
 			gripped = null;
@@ -144,27 +152,14 @@ class Controller implements MouseMoveListener, MouseListener, PaintListener {
 		
 		e.gc.drawText(movable.getName(), movable.getXPos() - movable.getSize()/5, movable.getYPos() - movable.getSize()/3);
 		
-		view.getLabel().setText(formatter.format(distance(target, movable)));
+		view.getLabel().setText(formatter.format(DefaultObjMeasures.distance(target, movable)/SIZE_SCALE));
 	}
 
-	public boolean isInRange(MObject obj, int x, int y) {
-		int distX = obj.getXPos() - x;
-		int distY = obj.getYPos() - y;
-		int size = obj.getSize();
-		
-		if (distX*distX + distY*distY <= (size*size)/4) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
-	public double distance(MObject obj1, MObject obj2) {
-		int distX = obj1.getXPos() - obj2.getXPos();
-		int distY = obj1.getYPos() - obj2.getYPos();
-		int cumSize = (obj1.getSize() + obj2.getSize())/2;
-		double val = (Math.sqrt(distX*distX + distY*distY) - cumSize) / SIZE_SCALE;
-		return val >= 0 ? val : 0;
+	public void modifyText(ModifyEvent e) {
+		// Resize target
+		int size = (int)(view.getSpinner().getSelection()/Math.pow(10, view.getSpinner().getDigits())*SIZE_SCALE);
+		target.setSize(size);
+		canvas.redraw();
 	}
 
 }
