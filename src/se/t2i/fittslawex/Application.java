@@ -7,16 +7,10 @@ public class Application {
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args) {
-		// Create View
-		MainWindow window = new MainWindow();
-
-		// TODO: Initialize model
-		
-		// TODO: Create controller
-
-		// Show the window
-		window.show();
+	public static void main(String[] args) {		
+		// Create controller
+		Controller controller = new Controller(new Model(), new MainWindow());
+		controller.run();
 	}
 
 }

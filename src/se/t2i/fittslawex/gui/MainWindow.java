@@ -1,7 +1,10 @@
 package se.t2i.fittslawex.gui;
 
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.events.PaintEvent;
+import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Shell;
@@ -9,6 +12,7 @@ import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Spinner;
@@ -18,9 +22,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Label;
 
 public class MainWindow {
-
-	private static final RGB CANVAS_BACKGROUND = new RGB(125,125,125);  //  @jve:decl-index=0:
-	
 	private Shell sShell = null;  //  @jve:decl-index=0:visual-constraint="12,33"
 	private Canvas canvas = null;
 	private Composite composite = null;
@@ -29,6 +30,10 @@ public class MainWindow {
 	private Button button = null;
 
 	private Group group1 = null;
+
+	private Label label1 = null;
+
+	private Group group2 = null;
 
 	private Label label = null;
 
@@ -86,10 +91,9 @@ public class MainWindow {
 		gridData.grabExcessHorizontalSpace = true;
 		gridData.grabExcessVerticalSpace = true;
 		gridData.verticalAlignment = GridData.FILL;
-		canvas = new Canvas(sShell, SWT.NONE);
+		canvas = new Canvas(sShell, SWT.BORDER);
 		canvas.setLayout(rowLayout);
 		canvas.setLayoutData(gridData);
-		canvas.setBackground(new Color(canvas.getDisplay(), CANVAS_BACKGROUND));
 	}
 
 	/**
@@ -98,15 +102,17 @@ public class MainWindow {
 	 */
 	private void createComposite() {
 		GridLayout gridLayout1 = new GridLayout();
-		gridLayout1.numColumns = 2;
+		gridLayout1.numColumns = 3;
 		GridData gridData3 = new GridData();
 		gridData3.horizontalAlignment = GridData.BEGINNING;
 		gridData3.grabExcessHorizontalSpace = true;
+		gridData3.grabExcessVerticalSpace = false;
 		gridData3.verticalAlignment = GridData.CENTER;
 		composite = new Composite(sShell, SWT.NONE);
 		composite.setLayout(gridLayout1);
 		composite.setLayoutData(gridData3);
 		createGroup();
+		createGroup2();
 		createGroup1();
 	}
 
@@ -115,22 +121,13 @@ public class MainWindow {
 	 *
 	 */
 	private void createGroup() {
-		GridData gridData2 = new GridData();
-		gridData2.horizontalAlignment = GridData.CENTER;
-		gridData2.grabExcessHorizontalSpace = false;
-		gridData2.grabExcessVerticalSpace = false;
-		gridData2.verticalAlignment = GridData.CENTER;
 		FillLayout fillLayout = new FillLayout();
-		fillLayout.type = org.eclipse.swt.SWT.HORIZONTAL;
-		fillLayout.marginHeight = 8;
-		fillLayout.marginWidth = 6;
 		fillLayout.spacing = 8;
+		fillLayout.marginWidth = 8;
+		fillLayout.marginHeight = 6;
 		group = new Group(composite, SWT.NONE);
-		group.setText("Size of Movable Object");
-		group.setLayoutData(gridData2);
 		group.setLayout(fillLayout);
-		spinner = new Spinner(group, SWT.NONE);
-		spinner.setMinimum(1);		
+		spinner = new Spinner(group, SWT.NONE);	
 	}
 
 	/**
@@ -142,16 +139,53 @@ public class MainWindow {
 		fillLayout1.spacing = 8;
 		fillLayout1.marginWidth = 6;
 		fillLayout1.marginHeight = 8;
-		GridData gridData4 = new GridData();
-		gridData4.horizontalAlignment = GridData.CENTER;
-		gridData4.verticalAlignment = GridData.CENTER;
 		group1 = new Group(composite, SWT.NONE);
-		group1.setLayoutData(gridData4);
 		group1.setLayout(fillLayout1);
-		group1.setText("Elapsed Time (seconds)");
-		label = new Label(group1, SWT.NONE);
-		label.setText("0.000");
-		label.setAlignment(SWT.RIGHT);
+		label1 = new Label(group1, SWT.NONE);
 	}
 
+	/**
+	 * This method initializes group2	
+	 *
+	 */
+	private void createGroup2() {
+		FillLayout fillLayout2 = new FillLayout();
+		fillLayout2.spacing = 8;
+		fillLayout2.marginWidth = 6;
+		fillLayout2.marginHeight = 8;
+		group2 = new Group(composite, SWT.NONE);
+		group2.setLayout(fillLayout2);
+		label = new Label(group2, SWT.NONE);
+	}
+
+	public Canvas getMainCanvas() {
+		return canvas;
+	}
+		
+	public Spinner getSpinner() {
+		return spinner;
+	}
+	
+	public void setSpinnerText(String value) {
+		group.setText(value);
+		sShell.changed(new Control[]{group});
+	}
+	
+	public Label getLabel() {
+		return label;
+	}
+
+	public void setLabelText(String value) {
+		group2.setText(value);
+		sShell.changed(new Control[]{group2});
+	}
+	
+	public Label getLabel1() {
+		return label1;
+	}
+
+	public void setLabel1Text(String value) {
+		group1.setText(value);
+		sShell.changed(new Control[]{group1});
+	}
 }
