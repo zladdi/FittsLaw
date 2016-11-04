@@ -94,8 +94,10 @@ class Controller implements MouseMoveListener, MouseListener, PaintListener, Mod
 	public void mouseMove(MouseEvent e) {
 		// See whether one of the objects is selected
 		if (gripped != null) {
-			gripped.setXPos(e.x);
-			gripped.setYPos(e.y);
+			if (!taskC.isTaskIsRunning() || (gripped == movable)) {
+				gripped.setXPos(e.x);
+				gripped.setYPos(e.y);
+			}
 		} else if (DefaultObjMeasures.isInRange(movable, e.x, e.y)) {
 			movable.setColor(MOVABLE_BACKGROUND_SEL);
 			target.setColor(TARGET_BACKGROUND);

@@ -20,8 +20,11 @@ public class TaskController implements Listener, MovementEventSubscriber {
 	private PositionListener p;
 	private MainWindow view;
 	
+	private boolean taskIsRunning;
+	
 	public TaskController(Model model, MainWindow view) {
 		this.view = view;
+		taskIsRunning = false;
 		RUNNING_COL = view.getLabel1().getDisplay().getSystemColor(SWT.COLOR_RED);
 		HIT_COL = view.getLabel1().getDisplay().getSystemColor(SWT.COLOR_GREEN);
 		
@@ -54,19 +57,23 @@ public class TaskController implements Listener, MovementEventSubscriber {
 			t.highlightTimer(RUNNING_COL);
 			// Add additional mouse movement listener
 			p.setEnabledOnce(true);
+			taskIsRunning = true;
 		} else if (BUTTON_CANCEL.equals(data)) {
 			p.setEnabledOnce(false);
 			t.stop();
 			t.reset();
 			t.unhighlightTimer();
 			reset();
+			taskIsRunning = false;
 		} else {
 			throw new IllegalArgumentException("Unknown event");
 		}
 	}
+	
+	public boolean isTaskIsRunning() {
+		return taskIsRunning;
+	}
 
-	
-	
 	public void targetHit() {
 		t.stop();
 		t.highlightTimer(HIT_COL);
