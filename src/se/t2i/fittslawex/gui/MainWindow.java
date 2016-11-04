@@ -133,8 +133,11 @@ public class MainWindow {
 		fillLayout1.spacing = 8;
 		fillLayout1.marginWidth = 6;
 		fillLayout1.marginHeight = 8;
+		GridData gridData1 = new GridData();
+		gridData1.widthHint = 60;
 		group1 = new Group(composite, SWT.NONE);
 		group1.setLayout(fillLayout1);
+		group1.setLayoutData(gridData1);
 		label1 = new Label(group1, SWT.NONE);
 	}
 
@@ -147,8 +150,11 @@ public class MainWindow {
 		fillLayout2.spacing = 8;
 		fillLayout2.marginWidth = 6;
 		fillLayout2.marginHeight = 8;
+		GridData gridData1 = new GridData();
+		gridData1.widthHint = 60;
 		group2 = new Group(composite, SWT.NONE);
 		group2.setLayout(fillLayout2);
+		group2.setLayoutData(gridData1);
 		label = new Label(group2, SWT.NONE);
 	}
 
